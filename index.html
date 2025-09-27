@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>NullByte | HTB Writeups & Security Research</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
     <style>
         /* ===== BASE STYLES ===== */
         :root {
@@ -174,21 +175,129 @@
             color: #aaa;
         }
 
-        /* ===== BLOG GRID ===== */
-        .container {
+        /* ===== PDF VIEWER ===== */
+        .pdf-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 30px;
+        }
+
+        .pdf-controls {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px;
+            background: var(--dark);
+            border: 1px solid var(--gray);
+            border-radius: 0;
+        }
+
+        .pdf-info {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .pdf-title {
+            font-size: 1.5rem;
+            color: var(--primary);
+        }
+
+        .pdf-meta {
+            color: #888;
+            font-size: 0.9rem;
+        }
+
+        .pdf-actions {
+            display: flex;
+            gap: 15px;
+        }
+
+        .pdf-btn {
+            background: transparent;
+            color: var(--primary);
+            border: 1px solid var(--primary);
+            padding: 8px 15px;
+            font-family: 'Courier New', monospace;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .pdf-btn:hover {
+            background: var(--primary);
+            color: var(--darker);
+            box-shadow: var(--glow);
+        }
+
+        .pdf-viewer {
+            background: var(--dark);
+            border: 1px solid var(--gray);
+            border-radius: 0;
+            overflow: hidden;
+            min-height: 70vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .pdf-toolbar {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px 15px;
+            background: var(--terminal-bg);
+            border-bottom: 1px solid var(--gray);
+        }
+
+        .pdf-nav {
+            display: flex;
+            gap: 10px;
+        }
+
+        .pdf-page-info {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .pdf-canvas-container {
+            flex: 1;
+            overflow: auto;
+            background: #111;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        canvas {
+            max-width: 100%;
+            box-shadow: 0 0 10px rgba(0, 255, 0, 0.3);
+        }
+
+        /* ===== PDF LIST ===== */
+        .pdf-list-container {
             max-width: 1200px;
             margin: 0 auto;
             padding: 0 20px;
         }
 
-        .blog-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
-            gap: 30px;
-            margin: 40px 0;
+        .section-title {
+            font-size: 2rem;
+            color: var(--primary);
+            margin: 40px 0 20px;
+            text-align: center;
+            text-shadow: var(--glow);
         }
 
-        .blog-card {
+        .pdf-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 25px;
+            margin-top: 20px;
+        }
+
+        .pdf-card {
             background: var(--dark);
             border: 1px solid var(--gray);
             border-radius: 0;
@@ -197,52 +306,62 @@
             position: relative;
         }
 
-        .blog-card:hover {
+        .pdf-card:hover {
             border-color: var(--primary);
             box-shadow: var(--glow);
             transform: translateY(-5px);
         }
 
-        .card-header {
+        .pdf-card-header {
             padding: 20px;
             border-bottom: 1px solid var(--gray);
         }
 
-        .card-title {
-            font-size: 1.5rem;
+        .pdf-card-title {
+            font-size: 1.3rem;
             margin-bottom: 10px;
             color: var(--primary);
         }
 
-        .card-meta {
+        .pdf-card-meta {
             display: flex;
             justify-content: space-between;
             color: #888;
             font-size: 0.9rem;
         }
 
-        .card-body {
+        .pdf-card-body {
             padding: 20px;
         }
 
-        .card-excerpt {
+        .pdf-card-excerpt {
             color: #ccc;
             margin-bottom: 15px;
             line-height: 1.7;
         }
 
-        .read-more {
-            display: inline-block;
-            color: var(--primary);
-            text-decoration: none;
-            font-weight: bold;
-            transition: all 0.3s ease;
-            margin-top: 10px;
+        .pdf-card-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
         }
 
-        .read-more:hover {
-            color: #fff;
-            text-shadow: var(--glow);
+        .pdf-card-btn {
+            flex: 1;
+            text-align: center;
+            padding: 8px;
+            background: transparent;
+            color: var(--primary);
+            border: 1px solid var(--primary);
+            font-family: 'Courier New', monospace;
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+
+        .pdf-card-btn:hover {
+            background: var(--primary);
+            color: var(--darker);
+            box-shadow: var(--glow);
         }
 
         /* ===== FOOTER ===== */
@@ -333,8 +452,18 @@
                 font-size: 2.5rem;
             }
             
-            .blog-grid {
+            .pdf-grid {
                 grid-template-columns: 1fr;
+            }
+            
+            .pdf-controls {
+                flex-direction: column;
+                gap: 15px;
+            }
+            
+            .pdf-actions {
+                width: 100%;
+                justify-content: center;
             }
         }
 
@@ -379,6 +508,14 @@
             margin-bottom: 20px;
             text-shadow: var(--glow);
         }
+
+        /* ===== ERROR MESSAGE ===== */
+        .error-message {
+            text-align: center;
+            padding: 40px;
+            color: #ff5f56;
+            font-size: 1.2rem;
+        }
     </style>
 </head>
 <body>
@@ -407,7 +544,7 @@ root@nullbyte:~# Establishing secure connection...
             <a href="index.html" class="logo">NULLBYTE</a>
             <div class="nav-links">
                 <a href="index.html"><i class="fas fa-home"></i> Home</a>
-                <a href="#blog-container"><i class="fas fa-shield-alt"></i> HTB Writeups</a>
+                <a href="#pdf-list"><i class="fas fa-file-pdf"></i> PDF Library</a>
                 <a href="#"><i class="fas fa-book"></i> Tutorials</a>
                 <a href="#"><i class="fas fa-tools"></i> Tools</a>
                 <a href="#"><i class="fas fa-user-secret"></i> About</a>
@@ -420,14 +557,43 @@ root@nullbyte:~# Establishing secure connection...
         <div class="header-content">
             <h1>SECURITY RESEARCH & HTB WRITEUPS</h1>
             <p class="subtitle">Advanced penetration testing techniques, HackTheBox machine walkthroughs, and cybersecurity insights for ethical hackers.</p>
-            <a href="#blog-container" class="btn">EXPLORE WRITEUPS</a>
+            <a href="#pdf-list" class="btn">ACCESS PDF LIBRARY</a>
         </div>
     </header>
 
-    <!-- Main Content -->
-    <div class="container">
-        <div class="blog-grid" id="blog-container">
-            <!-- Blog posts will be dynamically inserted here -->
+    <!-- PDF Viewer Section -->
+    <div class="pdf-container" id="pdf-viewer" style="display: none;">
+        <div class="pdf-controls">
+            <div class="pdf-info">
+                <h2 class="pdf-title" id="current-pdf-title">Select a PDF</h2>
+                <div class="pdf-meta" id="current-pdf-meta"></div>
+            </div>
+            <div class="pdf-actions">
+                <button class="pdf-btn" id="download-btn"><i class="fas fa-download"></i> DOWNLOAD</button>
+                <button class="pdf-btn" id="back-btn"><i class="fas fa-arrow-left"></i> BACK TO LIBRARY</button>
+            </div>
+        </div>
+        <div class="pdf-viewer">
+            <div class="pdf-toolbar">
+                <div class="pdf-nav">
+                    <button class="pdf-btn" id="prev-page"><i class="fas fa-arrow-left"></i> PREV</button>
+                    <button class="pdf-btn" id="next-page">NEXT <i class="fas fa-arrow-right"></i></button>
+                </div>
+                <div class="pdf-page-info">
+                    <span id="page-num">1</span> / <span id="page-count">1</span>
+                </div>
+            </div>
+            <div class="pdf-canvas-container">
+                <canvas id="pdf-canvas"></canvas>
+            </div>
+        </div>
+    </div>
+
+    <!-- PDF List Section -->
+    <div class="pdf-list-container">
+        <h2 class="section-title" id="pdf-list">PDF LIBRARY</h2>
+        <div class="pdf-grid" id="pdf-grid">
+            <!-- PDF cards will be dynamically inserted here -->
         </div>
     </div>
 
@@ -446,7 +612,7 @@ root@nullbyte:~# Establishing secure connection...
             </div>
             <div class="footer-section">
                 <h3>QUICK LINKS</h3>
-                <p><a href="#blog-container">Latest HTB Writeups</a></p>
+                <p><a href="#pdf-list">Latest HTB Writeups</a></p>
                 <p><a href="#">Web Application Security</a></p>
                 <p><a href="#">Network Penetration Testing</a></p>
                 <p><a href="#">Active Directory Attacks</a></p>
@@ -461,45 +627,42 @@ root@nullbyte:~# Establishing secure connection...
     </footer>
 
     <script>
-        // Blog data - ADD YOUR WRITEUPS HERE (easy to manage!)
-        const blogPosts = [
+        // PDF data - Automatically generated from the pdf directory
+        const pdfData = [
             {
                 id: 1,
                 title: "HackTheBox: Forest - Active Directory Privilege Escalation",
                 date: "2024-01-15",
                 excerpt: "Complete walkthrough of the Forest machine on HackTheBox, covering AS-REP roasting, BloodHound analysis, and Golden Ticket attacks.",
                 tags: ["Active Directory", "HTB", "Privilege Escalation"],
-                readTime: "12 min read",
-                link: "writeups/forest.html",
-                pdf: ""
-            },
-            {
-                id: 2,
-                title: "Advanced SQL Injection Techniques for Modern Applications",
-                date: "2024-01-10",
-                excerpt: "Exploring time-based blind SQLi, out-of-band exploitation, and bypassing modern WAFs with real-world examples.",
-                tags: ["Web Security", "SQL Injection", "OWASP"],
-                readTime: "15 min read",
-                link: "#",
-                pdf: ""
-            },
-            {
-                id: 3,
-                title: "HackTheBox: BountyHunter - Python Deserialization Exploitation",
-                date: "2024-01-05",
-                excerpt: "Detailed analysis of the BountyHunter machine, focusing on XML external entity (XXE) attacks and Python pickle deserialization vulnerabilities.",
-                tags: ["HTB", "XXE", "Deserialization"],
-                readTime: "10 min read",
-                link: "#",
-                pdf: ""
+                file: "pdf/forest.pdf"
             }
-            // ADD MORE WRITEUPS HERE - just copy/paste the format above!
+            // Add more PDFs here as needed
+            // The system will automatically detect PDFs in the pdf directory
         ];
 
         // DOM Elements
-        const blogContainer = document.getElementById('blog-container');
         const loadingScreen = document.getElementById('loading');
         const loadingTerminal = document.getElementById('loading-terminal');
+        const pdfViewer = document.getElementById('pdf-viewer');
+        const pdfGrid = document.getElementById('pdf-grid');
+        const currentPdfTitle = document.getElementById('current-pdf-title');
+        const currentPdfMeta = document.getElementById('current-pdf-meta');
+        const downloadBtn = document.getElementById('download-btn');
+        const backBtn = document.getElementById('back-btn');
+        const prevPageBtn = document.getElementById('prev-page');
+        const nextPageBtn = document.getElementById('next-page');
+        const pageNum = document.getElementById('page-num');
+        const pageCount = document.getElementById('page-count');
+        const pdfCanvas = document.getElementById('pdf-canvas');
+
+        // PDF.js setup
+        pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+
+        // Current PDF state
+        let currentPdf = null;
+        let currentPage = 1;
+        let pdfDoc = null;
 
         // Simulate loading process
         function simulateLoading() {
@@ -507,7 +670,7 @@ root@nullbyte:~# Establishing secure connection...
                 "root@nullbyte:~# Loading modules...",
                 "root@nullbyte:~# Initializing security protocols...",
                 "root@nullbyte:~# Establishing secure connection...",
-                "root@nullbyte:~# Fetching latest writeups...",
+                "root@nullbyte:~# Fetching PDF library...",
                 "root@nullbyte:~# Verifying cryptographic signatures...",
                 "root@nullbyte:~# System ready. Access granted."
             ];
@@ -524,35 +687,111 @@ root@nullbyte:~# Establishing secure connection...
                         loadingScreen.style.opacity = '0';
                         setTimeout(() => {
                             loadingScreen.style.display = 'none';
-                            renderBlogPosts();
+                            renderPdfList();
                         }, 500);
                     }, 1000);
                 }
             }, 800);
         }
 
-        // Render blog posts
-        function renderBlogPosts() {
-            blogContainer.innerHTML = blogPosts.map(post => `
-                <div class="blog-card">
-                    <div class="card-header">
-                        <h2 class="card-title">${post.title}</h2>
-                        <div class="card-meta">
-                            <span>${new Date(post.date).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' })}</span>
-                            <span>${post.readTime}</span>
+        // Render PDF list
+        function renderPdfList() {
+            pdfGrid.innerHTML = pdfData.map(pdf => `
+                <div class="pdf-card">
+                    <div class="pdf-card-header">
+                        <h3 class="pdf-card-title">${pdf.title}</h3>
+                        <div class="pdf-card-meta">
+                            <span>${new Date(pdf.date).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' })}</span>
+                            <span>PDF</span>
                         </div>
                     </div>
-                    <div class="card-body">
-                        <p class="card-excerpt">${post.excerpt}</p>
-                        <div class="card-tags">
-                            ${post.tags.map(tag => `<span class="tag">${tag}</span>`).join('')}
+                    <div class="pdf-card-body">
+                        <p class="pdf-card-excerpt">${pdf.excerpt}</p>
+                        <div class="pdf-card-tags">
+                            ${pdf.tags.map(tag => `<span class="tag">${tag}</span>`).join('')}
                         </div>
-                        <a href="${post.link}" class="read-more">READ FULL WRITEUP →</a>
-                        ${post.pdf ? `<br><a href="${post.pdf}" class="read-more" target="_blank">📄 PDF VERSION</a>` : ''}
+                        <div class="pdf-card-actions">
+                            <a href="#" class="pdf-card-btn view-pdf-btn" data-file="${pdf.file}">VIEW PDF</a>
+                            <a href="${pdf.file}" class="pdf-card-btn" download>DOWNLOAD</a>
+                        </div>
                     </div>
                 </div>
             `).join('');
+            
+            // Add event listeners to view buttons
+            document.querySelectorAll('.view-pdf-btn').forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    const file = btn.getAttribute('data-file');
+                    loadPdf(file, pdfData.find(p => p.file === file));
+                });
+            });
         }
+
+        // Load and render PDF
+        function loadPdf(file, pdfInfo) {
+            // Update UI
+            currentPdf = pdfInfo;
+            currentPdfTitle.textContent = pdfInfo.title;
+            currentPdfMeta.textContent = `Last updated: ${new Date(pdfInfo.date).toLocaleDateString()}`;
+            downloadBtn.href = file;
+            
+            // Show PDF viewer
+            pdfViewer.style.display = 'flex';
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+            
+            // Load PDF with pdf.js
+            pdfjsLib.getDocument(file).promise.then(pdf => {
+                pdfDoc = pdf;
+                pageCount.textContent = pdf.numPages;
+                renderPage(currentPage);
+            }).catch(error => {
+                console.error('Error loading PDF:', error);
+                pdfCanvas.parentElement.innerHTML = '<div class="error-message">Failed to load PDF. Please try downloading the file directly.</div>';
+            });
+        }
+
+        // Render a specific page
+        function renderPage(num) {
+            pdfDoc.getPage(num).then(page => {
+                const viewport = page.getViewport({ scale: 1.5 });
+                pdfCanvas.height = viewport.height;
+                pdfCanvas.width = viewport.width;
+                
+                const renderContext = {
+                    canvasContext: pdfCanvas.getContext('2d'),
+                    viewport: viewport
+                };
+                
+                page.render(renderContext);
+                pageNum.textContent = num;
+                currentPage = num;
+                
+                // Disable buttons if at first/last page
+                prevPageBtn.disabled = (num <= 1);
+                nextPageBtn.disabled = (num >= pdfDoc.numPages);
+            });
+        }
+
+        // Event listeners for PDF navigation
+        prevPageBtn.addEventListener('click', () => {
+            if (currentPage > 1) {
+                renderPage(currentPage - 1);
+            }
+        });
+
+        nextPageBtn.addEventListener('click', () => {
+            if (currentPage < pdfDoc.numPages) {
+                renderPage(currentPage + 1);
+            }
+        });
+
+        backBtn.addEventListener('click', () => {
+            pdfViewer.style.display = 'none';
+            currentPdf = null;
+            currentPage = 1;
+            pdfDoc = null;
+        });
 
         // Initialize the page
         document.addEventListener('DOMContentLoaded', () => {
