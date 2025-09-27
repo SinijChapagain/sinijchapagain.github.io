@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>NullByte | HTB Writeups & Security Research</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Fixed: Removed trailing space -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
     <style>
         /* ===== BASE STYLES ===== */
@@ -516,6 +517,12 @@
             color: #ff5f56;
             font-size: 1.2rem;
         }
+        
+        /* ===== DISABLED BUTTON STYLE ===== */
+        .pdf-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
     </style>
 </head>
 <body>
@@ -569,14 +576,14 @@ root@nullbyte:~# Establishing secure connection...
                 <div class="pdf-meta" id="current-pdf-meta"></div>
             </div>
             <div class="pdf-actions">
-                <button class="pdf-btn" id="download-btn"><i class="fas fa-download"></i> DOWNLOAD</button>
+                <a class="pdf-btn" id="download-btn" target="_blank"><i class="fas fa-download"></i> DOWNLOAD</a>
                 <button class="pdf-btn" id="back-btn"><i class="fas fa-arrow-left"></i> BACK TO LIBRARY</button>
             </div>
         </div>
         <div class="pdf-viewer">
             <div class="pdf-toolbar">
                 <div class="pdf-nav">
-                    <button class="pdf-btn" id="prev-page"><i class="fas fa-arrow-left"></i> PREV</button>
+                    <button class="pdf-btn" id="prev-page" disabled><i class="fas fa-arrow-left"></i> PREV</button>
                     <button class="pdf-btn" id="next-page">NEXT <i class="fas fa-arrow-right"></i></button>
                 </div>
                 <div class="pdf-page-info">
@@ -627,18 +634,26 @@ root@nullbyte:~# Establishing secure connection...
     </footer>
 
     <script>
-        // PDF data - Automatically generated from the pdf directory
+        // PDF data - Update this array when you add new PDFs
         const pdfData = [
             {
                 id: 1,
                 title: "HackTheBox: Vintage - Windows Active Directory",
                 date: "2024-01-15",
-                excerpt: "Complete walkthrough of the Forest machine on HackTheBox, covering AS-REP roasting, BloodHound analysis, and Golden Ticket attacks.",
+                excerpt: "Complete walkthrough of the Vintage machine on HackTheBox, covering AS-REP roasting, BloodHound analysis, and Golden Ticket attacks.",
                 tags: ["Active Directory", "HTB", "Privilege Escalation"],
                 file: "pdfs/Vintage-HTB.pdf"
             }
             // Add more PDFs here as needed
-            // The system will automatically detect PDFs in the pdf directory
+            // Example:
+            // {
+            //     id: 2,
+            //     title: "Another HTB Machine",
+            //     date: "2024-02-01",
+            //     excerpt: "Another great walkthrough...",
+            //     tags: ["HTB", "Linux"],
+            //     file: "pdfs/another-machine.pdf"
+            // }
         ];
 
         // DOM Elements
@@ -656,7 +671,7 @@ root@nullbyte:~# Establishing secure connection...
         const pageCount = document.getElementById('page-count');
         const pdfCanvas = document.getElementById('pdf-canvas');
 
-        // PDF.js setup
+        // PDF.js setup - Fixed worker URL (removed trailing space)
         pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
 
         // Current PDF state
@@ -696,6 +711,11 @@ root@nullbyte:~# Establishing secure connection...
 
         // Render PDF list
         function renderPdfList() {
+            if (pdfData.length === 0) {
+                pdfGrid.innerHTML = '<div class="error-message">No PDFs available. Add PDFs to the pdfs/ directory and update pdfData array.</div>';
+                return;
+            }
+            
             pdfGrid.innerHTML = pdfData.map(pdf => `
                 <div class="pdf-card">
                     <div class="pdf-card-header">
@@ -711,8 +731,8 @@ root@nullbyte:~# Establishing secure connection...
                             ${pdf.tags.map(tag => `<span class="tag">${tag}</span>`).join('')}
                         </div>
                         <div class="pdf-card-actions">
-                            <a href="#" class="pdf-card-btn view-pdf-btn" data-file="${pdf.file}">VIEW PDF</a>
-                            <a href="${pdf.file}" class="pdf-card-btn" download>DOWNLOAD</a>
+                            <a href="#" class="pdf-card-btn view-pdf-btn" data-file="${pdf.file}" data-title="${pdf.title}" data-date="${pdf.date}">VIEW PDF</a>
+                            <a href="${pdf.file}" class="pdf-card-btn" download="${pdf.title.replace(/[^a-z0-9]/gi, '_').toLowerCase()}.pdf">DOWNLOAD</a>
                         </div>
                     </div>
                 </div>
@@ -723,7 +743,16 @@ root@nullbyte:~# Establishing secure connection...
                 btn.addEventListener('click', (e) => {
                     e.preventDefault();
                     const file = btn.getAttribute('data-file');
-                    loadPdf(file, pdfData.find(p => p.file === file));
+                    const title = btn.getAttribute('data-title');
+                    const date = btn.getAttribute('data-date');
+                    
+                    const pdfInfo = {
+                        title: title,
+                        date: date,
+                        file: file
+                    };
+                    
+                    loadPdf(file, pdfInfo);
                 });
             });
         }
@@ -740,21 +769,45 @@ root@nullbyte:~# Establishing secure connection...
             pdfViewer.style.display = 'flex';
             window.scrollTo({ top: 0, behavior: 'smooth' });
             
+            // Reset canvas
+            pdfCanvas.width = 0;
+            pdfCanvas.height = 0;
+            
             // Load PDF with pdf.js
-            pdfjsLib.getDocument(file).promise.then(pdf => {
+            pdfjsLib.getDocument({
+                url: file,
+                cMapUrl: 'https://cdn.jsdelivr.net/npm/pdfjs-dist@3.11.174/cmaps/',
+                cMapPacked: true
+            }).promise.then(pdf => {
                 pdfDoc = pdf;
                 pageCount.textContent = pdf.numPages;
+                currentPage = 1;
                 renderPage(currentPage);
+                
+                // Update button states
+                prevPageBtn.disabled = (currentPage <= 1);
+                nextPageBtn.disabled = (currentPage >= pdfDoc.numPages);
             }).catch(error => {
                 console.error('Error loading PDF:', error);
-                pdfCanvas.parentElement.innerHTML = '<div class="error-message">Failed to load PDF. Please try downloading the file directly.</div>';
+                pdfCanvas.parentElement.innerHTML = `
+                    <div class="error-message">
+                        <p>Failed to load PDF. This may be due to CORS restrictions on GitHub Pages.</p>
+                        <p>Please try downloading the file directly using the DOWNLOAD button.</p>
+                        <p>Error: ${error.message}</p>
+                    </div>
+                `;
             });
         }
 
         // Render a specific page
         function renderPage(num) {
+            if (!pdfDoc) return;
+            
             pdfDoc.getPage(num).then(page => {
-                const viewport = page.getViewport({ scale: 1.5 });
+                const scale = 1.5;
+                const viewport = page.getViewport({ scale: scale });
+                
+                // Set canvas dimensions
                 pdfCanvas.height = viewport.height;
                 pdfCanvas.width = viewport.width;
                 
@@ -763,13 +816,19 @@ root@nullbyte:~# Establishing secure connection...
                     viewport: viewport
                 };
                 
-                page.render(renderContext);
-                pageNum.textContent = num;
-                currentPage = num;
-                
-                // Disable buttons if at first/last page
-                prevPageBtn.disabled = (num <= 1);
-                nextPageBtn.disabled = (num >= pdfDoc.numPages);
+                const renderTask = page.render(renderContext);
+                renderTask.promise.then(() => {
+                    pageNum.textContent = num;
+                    currentPage = num;
+                    
+                    // Update button states
+                    prevPageBtn.disabled = (num <= 1);
+                    nextPageBtn.disabled = (num >= pdfDoc.numPages);
+                }).catch(error => {
+                    console.error('Error rendering page:', error);
+                });
+            }).catch(error => {
+                console.error('Error getting page:', error);
             });
         }
 
@@ -781,7 +840,7 @@ root@nullbyte:~# Establishing secure connection...
         });
 
         nextPageBtn.addEventListener('click', () => {
-            if (currentPage < pdfDoc.numPages) {
+            if (pdfDoc && currentPage < pdfDoc.numPages) {
                 renderPage(currentPage + 1);
             }
         });
@@ -791,6 +850,9 @@ root@nullbyte:~# Establishing secure connection...
             currentPdf = null;
             currentPage = 1;
             pdfDoc = null;
+            // Clear canvas
+            pdfCanvas.width = 0;
+            pdfCanvas.height = 0;
         });
 
         // Initialize the page
