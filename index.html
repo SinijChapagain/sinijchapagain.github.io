@@ -570,31 +570,22 @@ root@nullbyte:~# Establishing secure connection...
 
     <!-- PDF Viewer Section -->
     <div class="pdf-container" id="pdf-viewer" style="display: none;">
-        <div class="pdf-controls">
-            <div class="pdf-info">
-                <h2 class="pdf-title" id="current-pdf-title">Select a PDF</h2>
-                <div class="pdf-meta" id="current-pdf-meta"></div>
-            </div>
-            <div class="pdf-actions">
-                <a class="pdf-btn" id="download-btn" target="_blank"><i class="fas fa-download"></i> DOWNLOAD</a>
-                <button class="pdf-btn" id="back-btn"><i class="fas fa-arrow-left"></i> BACK TO LIBRARY</button>
-            </div>
+    <div class="pdf-controls">
+        <div class="pdf-info">
+            <h2 class="pdf-title" id="current-pdf-title">Select a PDF</h2>
+            <div class="pdf-meta" id="current-pdf-meta"></div>
         </div>
-        <div class="pdf-viewer">
-            <div class="pdf-toolbar">
-                <div class="pdf-nav">
-                    <button class="pdf-btn" id="prev-page" disabled><i class="fas fa-arrow-left"></i> PREV</button>
-                    <button class="pdf-btn" id="next-page">NEXT <i class="fas fa-arrow-right"></i></button>
-                </div>
-                <div class="pdf-page-info">
-                    <span id="page-num">1</span> / <span id="page-count">1</span>
-                </div>
-            </div>
-            <div class="pdf-canvas-container">
-                <canvas id="pdf-canvas"></canvas>
-            </div>
+        <div class="pdf-actions">
+            <a class="pdf-btn" id="download-btn" target="_blank"><i class="fas fa-download"></i> DOWNLOAD</a>
+            <button class="pdf-btn" id="back-btn"><i class="fas fa-arrow-left"></i> BACK TO LIBRARY</button>
         </div>
     </div>
+    <div class="pdf-viewer">
+        <div class="pdf-canvas-container" id="pdf-iframe-container">
+            <!-- PDF will be displayed here as an iframe -->
+        </div>
+    </div>
+</div>
 
     <!-- PDF List Section -->
     <div class="pdf-list-container">
@@ -769,34 +760,15 @@ root@nullbyte:~# Establishing secure connection...
             pdfViewer.style.display = 'flex';
             window.scrollTo({ top: 0, behavior: 'smooth' });
             
-            // Reset canvas
-            pdfCanvas.width = 0;
-            pdfCanvas.height = 0;
-            
-            // Load PDF with pdf.js
-            pdfjsLib.getDocument({
-                url: file,
-                cMapUrl: 'https://cdn.jsdelivr.net/npm/pdfjs-dist@3.11.174/cmaps/',
-                cMapPacked: true
-            }).promise.then(pdf => {
-                pdfDoc = pdf;
-                pageCount.textContent = pdf.numPages;
-                currentPage = 1;
-                renderPage(currentPage);
-                
-                // Update button states
-                prevPageBtn.disabled = (currentPage <= 1);
-                nextPageBtn.disabled = (currentPage >= pdfDoc.numPages);
-            }).catch(error => {
-                console.error('Error loading PDF:', error);
-                pdfCanvas.parentElement.innerHTML = `
-                    <div class="error-message">
-                        <p>Failed to load PDF. This may be due to CORS restrictions on GitHub Pages.</p>
-                        <p>Please try downloading the file directly using the DOWNLOAD button.</p>
-                        <p>Error: ${error.message}</p>
-                    </div>
-                `;
-            });
+            // Use iframe to display PDF (works with GitHub Pages)
+            const iframeContainer = document.getElementById('pdf-iframe-container');
+            iframeContainer.innerHTML = `
+                <iframe 
+                    src="${file}" 
+                    style="width: 100%; height: 80vh; border: none; background: #111;"
+                    title="${pdfInfo.title}"
+                ></iframe>
+            `;
         }
 
         // Render a specific page
