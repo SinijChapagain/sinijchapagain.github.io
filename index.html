@@ -3,17 +3,21 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>HTB Writeups | Your Name</title>
+    <title>NullByte | HTB Writeups & Security Research</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
+        /* ===== BASE STYLES ===== */
         :root {
             --primary: #0f0;
+            --primary-dark: #0a0;
+            --secondary: #00f;
             --dark: #0a0a0a;
             --darker: #050505;
             --light: #0f0;
             --gray: #333;
             --terminal-bg: #001100;
             --terminal-border: #0f0;
+            --glow: 0 0 15px rgba(0, 255, 0, 0.7);
         }
 
         * {
@@ -27,144 +31,557 @@
             color: var(--light);
             font-family: 'Courier New', monospace;
             line-height: 1.6;
+            overflow-x: hidden;
         }
 
-        .container {
+        /* ===== TERMINAL EFFECTS ===== */
+        .terminal {
+            background: var(--terminal-bg);
+            border: 1px solid var(--terminal-border);
+            box-shadow: var(--glow);
+            border-radius: 0;
+            padding: 20px;
+            margin: 20px 0;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .terminal::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, var(--primary), transparent);
+            animation: scanline 4s linear infinite;
+        }
+
+        @keyframes scanline {
+            0% { top: 0; }
+            100% { top: 100%; }
+        }
+
+        .terminal-header {
+            display: flex;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid var(--terminal-border);
+        }
+
+        .terminal-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            margin-right: 8px;
+        }
+
+        .dot-red { background: #ff5f56; }
+        .dot-yellow { background: #ffbd2e; }
+        .dot-green { background: #27c93f; }
+
+        .terminal-content {
+            font-size: 14px;
+            white-space: pre-wrap;
+            word-break: break-all;
+        }
+
+        /* ===== NAVIGATION ===== */
+        nav {
+            background: var(--dark);
+            padding: 15px 0;
+            border-bottom: 1px solid var(--primary);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .nav-container {
             max-width: 1200px;
             margin: 0 auto;
-            padding: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 20px;
         }
 
+        .logo {
+            font-size: 24px;
+            font-weight: bold;
+            color: var(--primary);
+            text-decoration: none;
+            text-shadow: var(--glow);
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 25px;
+        }
+
+        .nav-links a {
+            color: var(--light);
+            text-decoration: none;
+            font-size: 16px;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .nav-links a:hover {
+            color: var(--primary);
+            text-shadow: var(--glow);
+        }
+
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: var(--primary);
+            transition: width 0.3s ease;
+        }
+
+        .nav-links a:hover::after {
+            width: 100%;
+        }
+
+        /* ===== HEADER ===== */
         header {
             text-align: center;
             padding: 60px 20px;
-            border-bottom: 1px solid var(--primary);
-            margin-bottom: 40px;
+            background: linear-gradient(rgba(5, 5, 5, 0.8), rgba(5, 5, 5, 0.9)), 
+                        url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100"><rect width="100" height="100" fill="%23050505"/><path d="M0 0L100 100M100 0L0 100" stroke="%230a0a0a" stroke-width="1"/></svg>');
+            background-size: 50px 50px;
+        }
+
+        .header-content {
+            max-width: 800px;
+            margin: 0 auto;
         }
 
         h1 {
-            font-size: 2.5rem;
-            color: var(--primary);
+            font-size: 3.5rem;
             margin-bottom: 20px;
+            color: var(--primary);
+            text-shadow: var(--glow);
+            letter-spacing: 3px;
+        }
+
+        .subtitle {
+            font-size: 1.2rem;
+            margin-bottom: 30px;
+            color: #aaa;
+        }
+
+        /* ===== BLOG GRID ===== */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
         }
 
         .blog-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
             gap: 30px;
+            margin: 40px 0;
         }
 
         .blog-card {
             background: var(--dark);
             border: 1px solid var(--gray);
-            padding: 20px;
+            border-radius: 0;
+            overflow: hidden;
             transition: all 0.3s ease;
+            position: relative;
         }
 
         .blog-card:hover {
             border-color: var(--primary);
+            box-shadow: var(--glow);
             transform: translateY(-5px);
         }
 
+        .card-header {
+            padding: 20px;
+            border-bottom: 1px solid var(--gray);
+        }
+
         .card-title {
-            color: var(--primary);
+            font-size: 1.5rem;
             margin-bottom: 10px;
-            font-size: 1.3rem;
+            color: var(--primary);
         }
 
         .card-meta {
+            display: flex;
+            justify-content: space-between;
             color: #888;
             font-size: 0.9rem;
-            margin-bottom: 15px;
+        }
+
+        .card-body {
+            padding: 20px;
         }
 
         .card-excerpt {
             color: #ccc;
             margin-bottom: 15px;
-            font-size: 0.95rem;
+            line-height: 1.7;
         }
 
+        .read-more {
+            display: inline-block;
+            color: var(--primary);
+            text-decoration: none;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            margin-top: 10px;
+        }
+
+        .read-more:hover {
+            color: #fff;
+            text-shadow: var(--glow);
+        }
+
+        /* ===== FOOTER ===== */
+        footer {
+            background: var(--dark);
+            padding: 40px 0;
+            border-top: 1px solid var(--gray);
+            margin-top: 60px;
+        }
+
+        .footer-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 30px;
+            padding: 0 20px;
+        }
+
+        .footer-section h3 {
+            color: var(--primary);
+            margin-bottom: 20px;
+            font-size: 1.3rem;
+        }
+
+        .social-links {
+            display: flex;
+            gap: 15px;
+            margin-top: 15px;
+        }
+
+        .social-links a {
+            display: inline-block;
+            width: 40px;
+            height: 40px;
+            background: var(--gray);
+            color: var(--light);
+            text-align: center;
+            line-height: 40px;
+            border-radius: 50%;
+            transition: all 0.3s ease;
+        }
+
+        .social-links a:hover {
+            background: var(--primary);
+            color: var(--darker);
+            transform: rotate(15deg);
+        }
+
+        /* ===== UTILITIES ===== */
         .tag {
             display: inline-block;
             background: rgba(0, 255, 0, 0.1);
             color: var(--primary);
-            padding: 2px 8px;
+            padding: 4px 10px;
             border: 1px solid var(--primary);
-            margin-right: 5px;
-            margin-bottom: 5px;
-            font-size: 0.8rem;
+            border-radius: 0;
+            font-size: 0.85rem;
+            margin-right: 8px;
+            margin-bottom: 8px;
         }
 
-        .read-more {
+        .btn {
+            display: inline-block;
+            background: transparent;
             color: var(--primary);
+            border: 1px solid var(--primary);
+            padding: 10px 20px;
             text-decoration: none;
-            font-weight: bold;
+            font-family: 'Courier New', monospace;
+            transition: all 0.3s ease;
+            cursor: pointer;
         }
 
-        footer {
+        .btn:hover {
+            background: var(--primary);
+            color: var(--darker);
+            box-shadow: var(--glow);
+        }
+
+        /* ===== RESPONSIVE ===== */
+        @media (max-width: 768px) {
+            .nav-links {
+                display: none;
+            }
+            
+            h1 {
+                font-size: 2.5rem;
+            }
+            
+            .blog-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* ===== ANIMATIONS ===== */
+        @keyframes blink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0; }
+        }
+
+        .cursor {
+            display: inline-block;
+            width: 8px;
+            height: 16px;
+            background: var(--primary);
+            animation: blink 1s infinite;
+            vertical-align: middle;
+            margin-left: 2px;
+        }
+
+        /* ===== LOADING SCREEN ===== */
+        .loading {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: var(--darker);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            transition: opacity 0.5s ease;
+        }
+
+        .loading-content {
             text-align: center;
-            padding: 40px 0;
-            margin-top: 60px;
-            border-top: 1px solid var(--gray);
-            color: #888;
+        }
+
+        .loading-text {
+            font-size: 2rem;
+            color: var(--primary);
+            margin-bottom: 20px;
+            text-shadow: var(--glow);
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <header>
-            <h1>HTB WRITEUPS & SECURITY BLOG</h1>
-            <p>by Your Name - Penetration Tester</p>
-        </header>
-
-        <div class="blog-grid" id="blog-container">
-            <!-- Your writeups will appear here -->
+    <!-- Loading Screen -->
+    <div class="loading" id="loading">
+        <div class="loading-content">
+            <div class="loading-text">INITIALIZING SYSTEM<span class="cursor"></span></div>
+            <div class="terminal" style="width: 400px; margin: 0 auto;">
+                <div class="terminal-header">
+                    <div class="terminal-dot dot-red"></div>
+                    <div class="terminal-dot dot-yellow"></div>
+                    <div class="terminal-dot dot-green"></div>
+                </div>
+                <div class="terminal-content" id="loading-terminal">
+root@nullbyte:~# Loading modules...
+root@nullbyte:~# Initializing security protocols...
+root@nullbyte:~# Establishing secure connection...
+                </div>
+            </div>
         </div>
     </div>
 
+    <!-- Navigation -->
+    <nav>
+        <div class="nav-container">
+            <a href="index.html" class="logo">NULLBYTE</a>
+            <div class="nav-links">
+                <a href="index.html"><i class="fas fa-home"></i> Home</a>
+                <a href="#blog-container"><i class="fas fa-shield-alt"></i> HTB Writeups</a>
+                <a href="#"><i class="fas fa-book"></i> Tutorials</a>
+                <a href="#"><i class="fas fa-tools"></i> Tools</a>
+                <a href="#"><i class="fas fa-user-secret"></i> About</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Header -->
+    <header>
+        <div class="header-content">
+            <h1>SECURITY RESEARCH & HTB WRITEUPS</h1>
+            <p class="subtitle">Advanced penetration testing techniques, HackTheBox machine walkthroughs, and cybersecurity insights for ethical hackers.</p>
+            <a href="#blog-container" class="btn">EXPLORE WRITEUPS</a>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <div class="container">
+        <div class="blog-grid" id="blog-container">
+            <!-- Blog posts will be dynamically inserted here -->
+        </div>
+    </div>
+
+    <!-- Footer -->
     <footer>
-        <div class="container">
-            <p>© 2024 Your HTB Blog | Hosted on GitHub Pages</p>
+        <div class="footer-content">
+            <div class="footer-section">
+                <h3>NULLBYTE</h3>
+                <p>Professional penetration testing blog featuring detailed HackTheBox writeups, security research, and ethical hacking tutorials.</p>
+                <div class="social-links">
+                    <a href="#"><i class="fab fa-twitter"></i></a>
+                    <a href="#"><i class="fab fa-github"></i></a>
+                    <a href="#"><i class="fab fa-linkedin"></i></a>
+                    <a href="#"><i class="fab fa-discord"></i></a>
+                </div>
+            </div>
+            <div class="footer-section">
+                <h3>QUICK LINKS</h3>
+                <p><a href="#blog-container">Latest HTB Writeups</a></p>
+                <p><a href="#">Web Application Security</a></p>
+                <p><a href="#">Network Penetration Testing</a></p>
+                <p><a href="#">Active Directory Attacks</a></p>
+            </div>
+            <div class="footer-section">
+                <h3>CONTACT</h3>
+                <p>Email: contact@nullbyte.security</p>
+                <p>PGP: 0x1A2B3C4D5E6F7G8H</p>
+                <p>Location: Anonymous</p>
+            </div>
         </div>
     </footer>
 
     <script>
-        // Your HTB writeups go here
-        const writeups = [
+        // Blog data - ADD YOUR WRITEUPS HERE (easy to manage!)
+        const blogPosts = [
             {
+                id: 1,
                 title: "HackTheBox: Forest - Active Directory Privilege Escalation",
-                date: "January 15, 2024",
-                excerpt: "Complete walkthrough of the Forest machine covering AS-REP roasting, BloodHound analysis, and Golden Ticket attacks.",
+                date: "2024-01-15",
+                excerpt: "Complete walkthrough of the Forest machine on HackTheBox, covering AS-REP roasting, BloodHound analysis, and Golden Ticket attacks.",
                 tags: ["Active Directory", "HTB", "Privilege Escalation"],
-                link: "forest.html" // Replace with your actual writeup file
+                readTime: "12 min read",
+                link: "writeups/forest.html",
+                pdf: ""
             },
             {
-                title: "HackTheBox: BountyHunter - XXE and Deserialization",
-                date: "January 10, 2024",
-                excerpt: "Detailed analysis of BountyHunter machine focusing on XML external entity attacks and Python pickle deserialization.",
+                id: 2,
+                title: "Advanced SQL Injection Techniques for Modern Applications",
+                date: "2024-01-10",
+                excerpt: "Exploring time-based blind SQLi, out-of-band exploitation, and bypassing modern WAFs with real-world examples.",
+                tags: ["Web Security", "SQL Injection", "OWASP"],
+                readTime: "15 min read",
+                link: "#",
+                pdf: ""
+            },
+            {
+                id: 3,
+                title: "HackTheBox: BountyHunter - Python Deserialization Exploitation",
+                date: "2024-01-05",
+                excerpt: "Detailed analysis of the BountyHunter machine, focusing on XML external entity (XXE) attacks and Python pickle deserialization vulnerabilities.",
                 tags: ["HTB", "XXE", "Deserialization"],
-                link: "#"
+                readTime: "10 min read",
+                link: "#",
+                pdf: ""
             }
-            // Add more writeups here
+            // ADD MORE WRITEUPS HERE - just copy/paste the format above!
         ];
 
-        function renderWriteups() {
-            const container = document.getElementById('blog-container');
-            container.innerHTML = writeups.map(writeup => `
+        // DOM Elements
+        const blogContainer = document.getElementById('blog-container');
+        const loadingScreen = document.getElementById('loading');
+        const loadingTerminal = document.getElementById('loading-terminal');
+
+        // Simulate loading process
+        function simulateLoading() {
+            const loadingMessages = [
+                "root@nullbyte:~# Loading modules...",
+                "root@nullbyte:~# Initializing security protocols...",
+                "root@nullbyte:~# Establishing secure connection...",
+                "root@nullbyte:~# Fetching latest writeups...",
+                "root@nullbyte:~# Verifying cryptographic signatures...",
+                "root@nullbyte:~# System ready. Access granted."
+            ];
+
+            let currentIndex = 0;
+            
+            const loadingInterval = setInterval(() => {
+                if (currentIndex < loadingMessages.length) {
+                    loadingTerminal.innerHTML += `\n${loadingMessages[currentIndex]}`;
+                    currentIndex++;
+                } else {
+                    clearInterval(loadingInterval);
+                    setTimeout(() => {
+                        loadingScreen.style.opacity = '0';
+                        setTimeout(() => {
+                            loadingScreen.style.display = 'none';
+                            renderBlogPosts();
+                        }, 500);
+                    }, 1000);
+                }
+            }, 800);
+        }
+
+        // Render blog posts
+        function renderBlogPosts() {
+            blogContainer.innerHTML = blogPosts.map(post => `
                 <div class="blog-card">
-                    <h3 class="card-title">${writeup.title}</h3>
-                    <div class="card-meta">${writeup.date}</div>
-                    <p class="card-excerpt">${writeup.excerpt}</p>
-                    <div>
-                        ${writeup.tags.map(tag => `<span class="tag">${tag}</span>`).join('')}
+                    <div class="card-header">
+                        <h2 class="card-title">${post.title}</h2>
+                        <div class="card-meta">
+                            <span>${new Date(post.date).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' })}</span>
+                            <span>${post.readTime}</span>
+                        </div>
                     </div>
-                    <br>
-                    <a href="${writeup.link}" class="read-more">READ FULL WRITEUP →</a>
+                    <div class="card-body">
+                        <p class="card-excerpt">${post.excerpt}</p>
+                        <div class="card-tags">
+                            ${post.tags.map(tag => `<span class="tag">${tag}</span>`).join('')}
+                        </div>
+                        <a href="${post.link}" class="read-more">READ FULL WRITEUP →</a>
+                        ${post.pdf ? `<br><a href="${post.pdf}" class="read-more" target="_blank">📄 PDF VERSION</a>` : ''}
+                    </div>
                 </div>
             `).join('');
         }
 
-        document.addEventListener('DOMContentLoaded', renderWriteups);
+        // Initialize the page
+        document.addEventListener('DOMContentLoaded', () => {
+            simulateLoading();
+            
+            // Add hover effects to terminal elements
+            const terminals = document.querySelectorAll('.terminal');
+            terminals.forEach(terminal => {
+                terminal.addEventListener('mouseenter', () => {
+                    terminal.style.boxShadow = '0 0 25px rgba(0, 255, 0, 0.9)';
+                });
+                terminal.addEventListener('mouseleave', () => {
+                    terminal.style.boxShadow = 'var(--glow)';
+                });
+            });
+        });
+
+        // Smooth scrolling for navigation
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth'
+                    });
+                }
+            });
+        });
     </script>
 </body>
 </html>
