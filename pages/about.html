@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>About - NULLBYTE</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="../styles/main.css">
+</head>
+<body>
+    <nav>
+        <div class="nav-container">
+            <a href="../index.html" class="logo">NULLBYTE</a>
+            <div class="nav-links">
+                <a href="../index.html"><i class="fas fa-home"></i> Home</a>
+                <a href="../index.html#pdf-list"><i class="fas fa-file-pdf"></i> PDF Library</a>
+                <a href="tutorials.html"><i class="fas fa-book"></i> Tutorials</a>
+                <a href="tools.html"><i class="fas fa-tools"></i> Tools</a>
+                <a href="about.html" class="active"><i class="fas fa-user-secret"></i> About</a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="page-container">
+        <header class="page-header">
+            <h1>ABOUT ME</h1>
+            <p class="subtitle">Cybersecurity Professional & Ethical Hacker</p>
+        </header>
+
+        <div class="content-grid">
+            <div class="content-section">
+                <div class="terminal">
+                    <div class="terminal-header">
+                        <div class="terminal-dot dot-red"></div>
+                        <div class="terminal-dot dot-yellow"></div>
+                        <div class="terminal-dot dot-green"></div>
+                    </div>
+                    <div class="terminal-content">
+                        <div class="profile-info">
+                            <h2><i class="fas fa-user"></i> Profile Information</h2>
+                            <div class="info-grid">
+                                <div class="info-item">
+                                    <span class="info-label">Name:</span>
+                                    <span class="info-value" id="profile-name">Loading...</span>
+                                </div>
+                                <div class="info-item">
+                                    <span class="info-label">Email:</span>
+                                    <span class="info-value" id="profile-email">Loading...</span>
+                                </div>
+                                <div class="info-item">
+                                    <span class="info-label">Phone:</span>
+                                    <span class="info-value" id="profile-phone">Loading...</span>
+                                </div>
+                                <div class="info-item">
+                                    <span class="info-label">Location:</span>
+                                    <span class="info-value" id="profile-location">Loading...</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="content-section">
+                <div class="terminal">
+                    <div class="terminal-header">
+                        <div class="terminal-dot dot-red"></div>
+                        <div class="terminal-dot dot-yellow"></div>
+                        <div class="terminal-dot dot-green"></div>
+                    </div>
+                    <div class="terminal-content">
+                        <h2><i class="fas fa-info-circle"></i> About</h2>
+                        <p id="profile-bio">Loading...</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="content-section">
+                <div class="terminal">
+                    <div class="terminal-header">
+                        <div class="terminal-dot dot-red"></div>
+                        <div class="terminal-dot dot-yellow"></div>
+                        <div class="terminal-dot dot-green"></div>
+                    </div>
+                    <div class="terminal-content">
+                        <h2><i class="fas fa-code"></i> Skills & Expertise</h2>
+                        <div class="skills-grid" id="skills-grid">
+                            Loading...
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="content-section">
+                <div class="terminal">
+                    <div class="terminal-header">
+                        <div class="terminal-dot dot-red"></div>
+                        <div class="terminal-dot dot-yellow"></div>
+                        <div class="terminal-dot dot-green"></div>
+                    </div>
+                    <div class="terminal-content">
+                        <h2><i class="fas fa-share-alt"></i> Connect With Me</h2>
+                        <div class="social-links" id="social-links">
+                            Loading...
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        <div class="footer-content">
+            <div class="footer-section">
+                <h3>NULLBYTE</h3>
+                <p>Professional penetration testing blog featuring detailed HackTheBox writeups, security research, and ethical hacking tutorials.</p>
+            </div>
+            <div class="footer-section">
+                <h3>QUICK LINKS</h3>
+                <p><a href="../index.html#pdf-list">Latest HTB Writeups</a></p>
+                <p><a href="tutorials.html">Security Tutorials</a></p>
+                <p><a href="tools.html">Security Tools</a></p>
+            </div>
+            <div class="footer-section">
+                <h3>CONTACT</h3>
+                <p id="footer-email">Loading...</p>
+                <p id="footer-phone">Loading...</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="../config.js"></script>
+    <script>
+        // Load personal information
+        document.addEventListener('DOMContentLoaded', () => {
+            // Profile info
+            document.getElementById('profile-name').textContent = PERSONAL_INFO.name;
+            document.getElementById('profile-email').textContent = PERSONAL_INFO.email;
+            document.getElementById('profile-phone').textContent = PERSONAL_INFO.phone;
+            document.getElementById('profile-location').textContent = PERSONAL_INFO.location;
+            document.getElementById('profile-bio').textContent = PERSONAL_INFO.bio;
+
+            // Skills
+            const skillsGrid = document.getElementById('skills-grid');
+            skillsGrid.innerHTML = PERSONAL_INFO.skills.map(skill => 
+                `<span class="tag">${skill}</span>`
+            ).join('');
+
+            // Social links
+            const socialLinks = document.getElementById('social-links');
+            socialLinks.innerHTML = Object.entries(PERSONAL_INFO.social).map(([platform, url]) => 
+                `<a href="${url}" target="_blank" title="${platform}">
+                    <i class="fab fa-${platform}"></i>
+                </a>`
+            ).join('');
+
+            // Footer info
+            document.getElementById('footer-email').textContent = `Email: ${PERSONAL_INFO.email}`;
+            document.getElementById('footer-phone').textContent = `Phone: ${PERSONAL_INFO.phone}`;
+        });
+    </script>
+</body>
+</html>
