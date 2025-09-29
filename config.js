@@ -32,7 +32,7 @@ const PDF_DATA = [
     excerpt:
       "Complete walkthrough of the Vintage machine on HackTheBox, covering AS-REP roasting, BloodHound analysis, and Golden Ticket attacks.",
     tags: ["Active Directory", "HTB", "Privilege Escalation"],
-    file: "sinijchapagain.github.io/pdfs/Vintage-HTB.pdf",
+    file: "pdfs/Vintage-HTB.pdf",
     difficulty: "Hard",
     category: "Windows",
     markdownFile: "writeups/markdown/vintage-htb.md", // Reference to external markdown file
