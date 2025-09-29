@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tools - NULLBYTE</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="../styles/main.css">
+</head>
+<body>
+    <nav>
+        <div class="nav-container">
+            <a href="../index.html" class="logo">NULLBYTE</a>
+            <div class="nav-links">
+                <a href="../index.html"><i class="fas fa-home"></i> Home</a>
+                <a href="../index.html#pdf-list"><i class="fas fa-file-pdf"></i> PDF Library</a>
+                <a href="tutorials.html"><i class="fas fa-book"></i> Tutorials</a>
+                <a href="tools.html" class="active"><i class="fas fa-tools"></i> Tools</a>
+                <a href="about.html"><i class="fas fa-user-secret"></i> About</a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="page-container">
+        <header class="page-header">
+            <h1>SECURITY TOOLS</h1>
+            <p class="subtitle">Custom tools and utilities for penetration testing and security research</p>
+        </header>
+
+        <div class="tools-grid" id="tools-grid">
+            Loading tools...
+        </div>
+    </div>
+
+    <footer>
+        <div class="footer-content">
+            <div class="footer-section">
+                <h3>NULLBYTE</h3>
+                <p>Professional penetration testing blog featuring detailed HackTheBox writeups, security research, and ethical hacking tutorials.</p>
+            </div>
+            <div class="footer-section">
+                <h3>QUICK LINKS</h3>
+                <p><a href="../index.html#pdf-list">Latest HTB Writeups</a></p>
+                <p><a href="tutorials.html">Security Tutorials</a></p>
+                <p><a href="about.html">About Me</a></p>
+            </div>
+            <div class="footer-section">
+                <h3>CONTACT</h3>
+                <p id="footer-email">Loading...</p>
+                <p id="footer-phone">Loading...</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="../config.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // Load tools
+            const toolsGrid = document.getElementById('tools-grid');
+            toolsGrid.innerHTML = TOOLS_DATA.map(tool => `
+                <div class="tool-card">
+                    <div class="terminal">
+                        <div class="terminal-header">
+                            <div class="terminal-dot dot-red"></div>
+                            <div class="terminal-dot dot-yellow"></div>
+                            <div class="terminal-dot dot-green"></div>
+                        </div>
+                        <div class="terminal-content">
+                            <h3><i class="fas fa-terminal"></i> ${tool.name}</h3>
+                            <p class="tool-description">${tool.description}</p>
+                            <div class="tool-meta">
+                                <span class="tag">${tool.category}</span>
+                                <span class="tool-status ${tool.status === 'Available' ? 'status-available' : 'status-coming-soon'}">${tool.status}</span>
+                            </div>
+                            <div class="tool-actions">
+                                ${tool.status === 'Available' ? 
+                                    '<a href="#" class="btn">LAUNCH TOOL</a>' : 
+                                    '<button class="btn" disabled>COMING SOON</button>'
+                                }
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+
+            // Footer info
+            document.getElementById('footer-email').textContent = `Email: ${PERSONAL_INFO.email}`;
+            document.getElementById('footer-phone').textContent = `Phone: ${PERSONAL_INFO.phone}`;
+        });
+    </script>
+</body>
+</html>
