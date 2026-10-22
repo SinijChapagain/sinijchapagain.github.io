@@ -24,6 +24,7 @@
                 <a href="#expertise">Expertise</a>
                 <a href="#experience">Experience</a>
                 <a href="#certifications">Certifications</a>
+                <a href="#project">Research</a>
                 <a href="#writeups">Writeups</a>
                 <a href="assets/Sinij_Chapagain_CV.pdf" class="btn btn-sm" target="_blank" rel="noopener"><i class="fas fa-file-arrow-down"></i> CV</a>
             </div>
@@ -202,20 +203,62 @@
         </div>
     </section>
 
-    <section id="education">
+    <section id="project">
         <div class="wrap">
-            <div class="two-col">
+            <div class="section-head">
+                <div class="kicker">// research project</div>
+                <h2>VIPT — Autonomous Vulnerability Intelligence &amp; Penetration Testing</h2>
+                <p>My MSc research prototype: an AI agent that runs structured, authorized web-application security assessments against lab targets, built to make AI-assisted testing repeatable, grounded, and safe. Written in Kotlin (~37k lines) with four genuine ML subsystems behind the reasoning.</p>
+            </div>
+            <div class="grid-3">
                 <div class="card">
-                    <div class="kicker">// current research</div>
-                    <h3 style="margin-top:8px">AI-assisted penetration testing</h3>
-                    <p>As part of my MSc I'm researching safe, authorized AI-agent workflows for penetration testing: controlled vulnerability discovery, structured exploit validation, and more consistent, higher-quality reporting.</p>
+                    <div class="icon"><i class="fas fa-diagram-project"></i></div>
+                    <h3>Naïve Bayes vuln classifier</h3>
+                    <p>Maps lab objectives and HTTP responses to 30 vulnerability categories, with a Claude ensemble fallback when confidence is low.</p>
                 </div>
                 <div class="card">
-                    <div class="kicker">// education</div>
-                    <div class="edu-item" style="margin-top:10px">
+                    <div class="icon"><i class="fas fa-dice"></i></div>
+                    <h3>Reinforcement learning</h3>
+                    <p>A UCB1 multi-armed bandit learns which payloads resolve each vulnerability type fastest, with a persisted Q-table that improves across runs.</p>
+                </div>
+                <div class="card">
+                    <div class="icon"><i class="fas fa-magnifying-glass"></i></div>
+                    <h3>Semantic retrieval</h3>
+                    <p>TF-IDF cosine-similarity search over a technique library ingested from public writeups, replacing brittle string matching.</p>
+                </div>
+                <div class="card">
+                    <div class="icon"><i class="fas fa-scale-balanced"></i></div>
+                    <h3>LLM debate engine</h3>
+                    <p>Analysis and critique agents argue to a structured JSON verdict, reducing false positives before anything is reported as a finding.</p>
+                </div>
+                <div class="card">
+                    <div class="icon"><i class="fas fa-shield-halved"></i></div>
+                    <h3>Safety &amp; scope enforcement</h3>
+                    <p>Hard scope guardrails and mandatory authorization constraints keep every run limited to explicitly approved lab targets.</p>
+                </div>
+                <div class="card">
+                    <div class="icon"><i class="fas fa-chart-line"></i></div>
+                    <h3>Evaluation harness</h3>
+                    <p>Precision/recall measured against a fixed, hand-verified benchmark, plus pilot runs validated against PortSwigger and HTB-style lab machines.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="education">
+        <div class="wrap">
+            <div class="section-head">
+                <div class="kicker">// education</div>
+                <h2>Education</h2>
+            </div>
+            <div class="two-col">
+                <div class="card">
+                    <div class="edu-item">
                         <b>MSc IT, Artificial Intelligence &amp; Machine Learning</b>
                         <span>Islington College, Kathmandu · 2024 — Present</span>
                     </div>
+                </div>
+                <div class="card">
                     <div class="edu-item">
                         <b>BSc IT, Computer Networking &amp; IT Security</b>
                         <span>Islington College, Kathmandu · 2018 — 2021</span>
