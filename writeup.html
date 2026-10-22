@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Writeup | Sinij Chapagain</title>
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><circle cx='16' cy='16' r='15' fill='%230b1220' stroke='%232dd4bf' stroke-width='2'/><text x='16' y='21' font-family='Arial' font-weight='700' font-size='13' fill='%232dd4bf' text-anchor='middle'>SC</text></svg>">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="styles/main.css">
+    <script src="config.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/marked@12.0.2/marked.min.js"></script>
+</head>
+<body>
+    <nav>
+        <div class="wrap nav-inner">
+            <a href="index.html" class="brand"><span class="brand-mark">SC</span>Sinij Chapagain</a>
+            <div class="nav-links">
+                <a href="index.html#writeups">Writeups</a>
+                <a href="assets/Sinij_Chapagain_CV.pdf" class="btn btn-sm" target="_blank" rel="noopener"><i class="fas fa-file-arrow-down"></i> CV</a>
+            </div>
+        </div>
+    </nav>
+
+    <article class="reader">
+        <a class="back" href="index.html#writeups">← All writeups</a>
+        <div class="reader-head" id="head"></div>
+        <div class="prose" id="content"><p style="color:var(--muted)">Loading…</p></div>
+    </article>
+
+    <footer>
+        <div class="wrap footer-inner">
+            <span>© <span id="year"></span> Sinij Chapagain</span>
+            <div class="links"><a href="index.html">Home</a><a href="https://www.linkedin.com/in/sinij-chapagain-8588031b0/" target="_blank" rel="noopener">LinkedIn</a></div>
+        </div>
+    </footer>
+
+    <script>
+        document.getElementById('year').textContent = new Date().getFullYear();
+
+        const esc = s => String(s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+        const slug = new URLSearchParams(location.search).get('w');
+        const w = WRITEUPS.find(x => x.slug === slug);
+        const head = document.getElementById('head');
+        const content = document.getElementById('content');
+
+        if (!w) {
+            head.innerHTML = '<h1>Writeup not found</h1>';
+            content.innerHTML = '<p><a href="index.html#writeups">Browse all writeups</a></p>';
+        } else {
+            document.title = `${w.title} | Sinij Chapagain`;
+            const date = new Date(w.date).toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' });
+            head.innerHTML = `
+                <div class="writeup-meta">
+                    <span>${esc(w.platform)}</span>
+                    <span class="badge ${esc(w.difficulty.toLowerCase())}">${esc(w.difficulty)}</span>
+                    <span>${esc(w.os)}</span>
+                    <span>${esc(date)}</span>
+                </div>
+                <h1>${esc(w.title)}</h1>
+                <p style="color:var(--muted)">${esc(w.excerpt)}</p>
+                <div class="tags" style="margin-top:16px">${w.tags.map(t => `<span class="tag">${esc(t)}</span>`).join('')}</div>`;
+
+            fetch(`writeups/markdown/${encodeURIComponent(w.slug)}.md`)
+                .then(r => { if (!r.ok) throw new Error(r.status); return r.text(); })
+                .then(md => {
+                    content.innerHTML = marked.parse(md);
+                    // hide images whose files haven't been uploaded yet rather than showing broken icons
+                    content.querySelectorAll('img').forEach(img => {
+                        if (img.complete && !img.naturalWidth) img.remove();
+                        else img.addEventListener('error', () => img.remove());
+                    });
+                })
+                .catch(() => { content.innerHTML = '<p>Could not load this writeup. Please try again later.</p>'; });
+        }
+    </script>
+</body>
+</html>

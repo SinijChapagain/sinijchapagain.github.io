@@ -1,68 +1,31 @@
-// Personal Information - Edit this section to update your details
-const PERSONAL_INFO = {
+// Site data - edit this file to update the portfolio without touching the HTML.
+
+const PROFILE = {
   name: "Sinij Chapagain",
+  title: "Information Security Specialist",
   email: "seeneez111@gmail.com",
-  phone: "+977 9814915091",
-  location: "Nepal",
-  bio: "Cybersecurity enthusiast and penetration tester specializing in Active Directory attacks, web application security, and HackTheBox challenges.",
-  social: {
-    github: "https://github.com/sinijchapagain",
-    linkedin: "https://linkedin.com/in/sinijchapagain",
-    twitter: "https://twitter.com/sinijchapagain",
-    discord: "sinij#1234",
-  },
-  skills: [
-    "Penetration Testing",
-    "Active Directory",
-    "Web Application Security",
-    "Network Security",
-    "OSCP Preparation",
-    "HackTheBox",
-    "Python Scripting",
-    "Linux Administration",
-  ],
+  location: "Kathmandu, Nepal",
+  cv: "assets/Sinij_Chapagain_CV.pdf",
+  linkedin: "https://www.linkedin.com/in/sinij-chapagain-8588031b0/",
+  github: "https://github.com/SinijChapagain",
 }
 
-// PDF Data - Add new PDFs here
-const PDF_DATA = [
+// Writeups - add a markdown file under writeups/markdown/ and an entry here.
+// `slug` must match the markdown filename (without .md).
+const WRITEUPS = [
   {
-    id: 1,
-    title: "HackTheBox: Vintage - Windows Active Directory",
-    date: "2024-01-15",
-    excerpt:
-      "Complete walkthrough of the Vintage machine on HackTheBox, covering AS-REP roasting, BloodHound analysis, and Golden Ticket attacks.",
-    tags: ["Active Directory", "HTB", "Privilege Escalation"],
-    file: "pdfs/Vintage-HTB.pdf",
+    slug: "vintage-htb",
+    title: "Vintage — Kerberos Delegation to Domain Admin",
+    platform: "Hack The Box",
+    date: "2025-09-26",
     difficulty: "Hard",
-    category: "Windows",
-    markdownFile: "writeups/markdown/vintage-htb.md", // Reference to external markdown file
-  },
-  // Add more PDFs here as you create them
-]
-
-// Tools Data - Add your security tools here
-const TOOLS_DATA = [
-  {
-    name: "Nmap Scanner",
-    description: "Advanced port scanning and service enumeration",
-    category: "Reconnaissance",
-    status: "Coming Soon",
-  },
-  {
-    name: "Hash Cracker",
-    description: "Multi-format hash cracking utility",
-    category: "Cryptography",
-    status: "Coming Soon",
-  },
-  {
-    name: "Payload Generator",
-    description: "Custom payload generation for various platforms",
-    category: "Exploitation",
-    status: "Coming Soon",
+    os: "Windows · Active Directory",
+    excerpt:
+      "Kerberos-only AD environment with NTLM disabled. Abuses GMSA password reads, group membership, and resource-based constrained delegation, then extracts DPAPI credentials for full domain compromise.",
+    tags: ["Active Directory", "Kerberos", "RBCD", "DPAPI", "BloodHound"],
   },
 ]
 
-// Export for use in other files
 if (typeof module !== "undefined" && module.exports) {
-  module.exports = { PERSONAL_INFO, PDF_DATA, TOOLS_DATA }
+  module.exports = { PROFILE, WRITEUPS }
 }
