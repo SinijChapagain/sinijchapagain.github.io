@@ -206,3 +206,14 @@ footer { border-top: 1px solid var(--line); padding: 28px 0; color: var(--muted)
   .contact-card { padding: 28px 22px; }
   .reader { padding: 40px 16px 64px; }
 }
+
+/* ===== PROJECTS ===== */
+.project { display: flex; flex-direction: column; }
+.project-head { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 14px; }
+.project-head .icon { margin: 0; }
+.project h3 { margin-bottom: 8px; }
+.project p { flex: 1; }
+.project-links { margin-top: 16px; display: flex; gap: 16px; flex-wrap: wrap; }
+.project-links a { font-size: 14px; font-weight: 600; display: inline-flex; align-items: center; gap: 7px; }
+.badge.research { color: #7dd3fc; border-color: rgba(125, 211, 252, .35); }
+.badge.lab { color: #c4b5fd; border-color: rgba(196, 181, 253, .35); }
