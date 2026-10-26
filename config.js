@@ -14,6 +14,50 @@ const PROFILE = {
 // `slug` must match the markdown filename (without .md).
 const WRITEUPS = [
   {
+    slug: "gobox-htb",
+    title: "GoBox — Go SSTI to Root via S3 and Nginx Module",
+    platform: "Hack The Box",
+    date: "2025-09-08",
+    difficulty: "Hard",
+    os: "Linux · Web App",
+    excerpt:
+      "Go template injection leads to command execution, an uploaded web shell, and a custom nginx module escalation to root — a clean chain from app flaw to full host takeover.",
+    tags: ["SSTI", "Go", "Web Shell", "Privilege Escalation", "Nginx"],
+  },
+  {
+    slug: "qlotto-htb",
+    title: "QLotto — Exploiting Quantum Lottery Prediction",
+    platform: "Hack The Box",
+    date: "2025-09-16",
+    difficulty: "Medium",
+    os: "Linux · Challenge",
+    excerpt:
+      "A custom quantum challenge where negative-index parsing and entanglement logic let me pivot from “random” output to a deterministic winning strategy.",
+    tags: ["Reverse Engineering", "Logic Abuse", "CTF", "Python", "Challenge"],
+  },
+  {
+    slug: "under-construction-htb",
+    title: "Under Construction — JWT Confusion + SQLi to Full DB Exfiltration",
+    platform: "Hack The Box",
+    date: "2025-09-20",
+    difficulty: "Hard",
+    os: "Linux · Web App",
+    excerpt:
+      "JWT algorithm confusion is paired with SQL injection to forge a guest token, reach the app DB, and pull the hidden flag from a full database dump path.",
+    tags: ["JWT", "Algorithm Confusion", "SQLi", "Web Security", "Auth Bypass"],
+  },
+  {
+    slug: "cicada-htb",
+    title: "Cicada — Challenge Notes & Recon Workflow",
+    platform: "Hack The Box",
+    date: "2025-09-22",
+    difficulty: "Research",
+    os: "Linux · Enumeration",
+    excerpt:
+      "A collected set of challenge screenshots and early-stage notes from the Cicada lab, documenting the reconnaissance and exploitation trail as a working writeup draft.",
+    tags: ["Recon", "Challenge Notes", "HTB", "Writeup In Progress"],
+  },
+  {
     slug: "vintage-htb",
     title: "Vintage — Kerberos Delegation to Domain Admin",
     platform: "Hack The Box",
