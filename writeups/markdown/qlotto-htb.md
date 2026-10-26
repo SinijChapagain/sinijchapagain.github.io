@@ -6,7 +6,7 @@ QLotto is Hack The Box's quantum lottery challenge by Qubitrix. At first glance 
 
 Connecting to the server with `nc 83.136.252.32 48713` drops you at a prompt:
 
-![initial prompt](qlotto-htb/doc-1_1.png)
+![initial prompt](qlotto/doc-1_1.png)
 
 ```
 Place your quantum moves :
@@ -31,7 +31,7 @@ circuit.h(0)
 
 So the server already applies a Hadamard gate to qubit 0 before our input — qubit 0 starts in superposition, but we can't touch it directly. Parsing of our moves looks like this:
 
-![server.py parsing](qlotto-htb/doc-2_1.png)
+![server.py parsing](qlotto/doc-2_1.png)
 
 ```python
 instructions = instructions.split(";")
@@ -80,6 +80,6 @@ The server returned six numbers — my "draws". Because the qubits were now enta
 
 Applying that rule to each draw produced the correct bet, which returned the flag:
 
-![flag](qlotto-htb/doc-5_1.png)
+![flag](qlotto/doc-5_1.png)
 
 **Happy Hacking!!!**

@@ -26,17 +26,17 @@ PORT     STATE    SERVICE    VERSION
 
 After methodically testing multiple endpoints for common injection vulnerabilities, I arrived at a `/forgot` endpoint while probing `http://gobox.htb:8080/`.
 
-![forgot endpoint](gobox-htb/doc-2_1.png)
+![forgot endpoint](gobox/doc-2_1.png)
 
 In Burp Suite I noticed the `X-Forwarded-Server: golang` header — a clear signal that the backend is powered by Go. That got me thinking: if it's rendering templates, could it be vulnerable to **Server-Side Template Injection**?
 
 That's when I referenced OnSecurity's research on Go SSTI, which reveals a critical nuance: when a Go template is rendered with a struct like `&user{}`, it dynamically interpolates field values — such as `{{.Email}}` — directly from the object. What begins as a simple template render becomes a direct path to data exfiltration.
 
-![SSTI field interpolation](gobox-htb/doc-3_1.png)
+![SSTI field interpolation](gobox/doc-3_1.png)
 
 After experimenting with `.Secret`, we pivoted to a juicier target: a `.DebugCmd` method that didn't just echo input — it echoed **control**.
 
-![DebugCmd method](gobox-htb/doc-4_1.png)
+![DebugCmd method](gobox/doc-4_1.png)
 
 ```
 {{ .DebugCmd "id" }}                          // Check for user privileges
@@ -57,7 +57,7 @@ We needed a PHP webshell that lets us run commands via the browser.
 
 This takes a base64-encoded string (which decodes to `<?php system($_GET[cmd]); ?>`) and writes it to `/tmp/evil.php`.
 
-![write shell](gobox-htb/doc-5_1.png)
+![write shell](gobox/doc-5_1.png)
 
 **Step 2 — upload it to the S3 bucket:**
 
@@ -67,21 +67,21 @@ This takes a base64-encoded string (which decodes to `<?php system($_GET[cmd]); 
 
 Now `http://10.10.11.113/evil.php` exists and it's ours.
 
-![upload to s3](gobox-htb/doc-5_2.png)
+![upload to s3](gobox/doc-5_2.png)
 
 ## Getting a foothold
 
 Visiting `http://10.10.11.113/evil.php?cmd=id` confirms the shell works.
 
-![shell works](gobox-htb/doc-6_1.png)
+![shell works](gobox/doc-6_1.png)
 
 We trigger a reverse shell back to our machine:
 
-![reverse shell payload](gobox-htb/doc-6_2.png)
+![reverse shell payload](gobox/doc-6_2.png)
 
 And catch it on our listener:
 
-![listener](gobox-htb/doc-6_3.png)
+![listener](gobox/doc-6_3.png)
 
 The shell was raw, so we upgraded it:
 
