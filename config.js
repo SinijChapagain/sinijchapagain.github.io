@@ -14,6 +14,18 @@ const PROFILE = {
 // `slug` must match the markdown filename (without .md).
 const WRITEUPS = [
   {
+    slug: "bucket-htb",
+    title: "Bucket — AWS S3 & DynamoDB to Root",
+    platform: "Hack The Box",
+    date: "2025-09-08",
+    difficulty: "Medium",
+    os: "Linux · Cloud",
+    category: "Web Exploitation",
+    excerpt:
+      "A LocalStack AWS box: an unauthenticated S3 bucket backing the web root gives PHP RCE, a DynamoDB table leaks SSH passwords, and a root-owned pd4ml HTML-to-PDF app is abused for a local file read to root.",
+    tags: ["AWS", "S3", "DynamoDB", "LocalStack", "PHP RCE", "LFI"],
+  },
+  {
     slug: "tombwatcher-htb",
     title: "TombWatcher — AD ACL Chain to Domain Admin (ADCS ESC15)",
     platform: "Hack The Box",
