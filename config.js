@@ -15,6 +15,7 @@ const PROFILE = {
 const WRITEUPS = [
   {
     slug: "bad-robot-arkx",
+    category: "AI & LLM Security",
     title: "Bad Robot â Python eval() RCE in an AI Calculator Agent",
     platform: "ARKX Â· AI Agent Security",
     date: "2026-11-16",
@@ -26,6 +27,7 @@ const WRITEUPS = [
   },
   {
     slug: "master-of-resources-arkx",
+    category: "AI & LLM Security",
     title: "Master of Resources â Broken Access Control in an MCP Server",
     platform: "ARKX Â· AI Agent Security",
     date: "2026-11-16",
@@ -37,6 +39,7 @@ const WRITEUPS = [
   },
   {
     slug: "blind-network-ninja-arkx",
+    category: "AI & LLM Security",
     title: "Blind Network Ninja â Blind Command Injection via OOB Exfiltration",
     platform: "ARKX Â· AI Agent Security",
     date: "2026-11-17",
@@ -48,6 +51,7 @@ const WRITEUPS = [
   },
   {
     slug: "gobox-htb",
+    category: "Web Exploitation",
     title: "GoBox — Go SSTI to Root via S3 and Nginx Module",
     platform: "Hack The Box",
     date: "2025-09-08",
@@ -59,6 +63,7 @@ const WRITEUPS = [
   },
   {
     slug: "qlotto-htb",
+    category: "Reversing & Challenges",
     title: "QLotto — Exploiting Quantum Lottery Prediction",
     platform: "Hack The Box",
     date: "2025-09-16",
@@ -70,6 +75,7 @@ const WRITEUPS = [
   },
   {
     slug: "under-construction-htb",
+    category: "Web Exploitation",
     title: "Under Construction — JWT Confusion + SQLi to Full DB Exfiltration",
     platform: "Hack The Box",
     date: "2025-09-20",
@@ -81,6 +87,7 @@ const WRITEUPS = [
   },
   {
     slug: "cicada-htb",
+    category: "Active Directory",
     title: "Cicada — Challenge Notes & Recon Workflow",
     platform: "Hack The Box",
     date: "2025-09-22",
@@ -92,6 +99,7 @@ const WRITEUPS = [
   },
   {
     slug: "vintage-htb",
+    category: "Active Directory",
     title: "Vintage — Kerberos Delegation to Domain Admin",
     platform: "Hack The Box",
     date: "2025-09-26",
@@ -103,6 +111,7 @@ const WRITEUPS = [
   },
   {
     slug: "crtp-dcorp-domain-admin",
+    category: "Active Directory",
     title: "CRTP — AD Attack Path to Domain Admin",
     platform: "Altered Security · CRTP Lab",
     date: "2025-11-02",
@@ -114,6 +123,7 @@ const WRITEUPS = [
   },
   {
     slug: "kerberos-delegation-defense",
+    category: "Active Directory",
     title: "Kerberos Delegation Abuse — Detection & Defence",
     platform: "Red Team Research",
     date: "2025-10-15",
