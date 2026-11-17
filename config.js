@@ -3,7 +3,7 @@
 const PROFILE = {
   name: "Sinij Chapagain",
   title: "Information Security Specialist",
-  email: "seeneez111@gmail.com",
+  email: "sinijchapagai@gmail.com",
   location: "Kathmandu, Nepal",
   cv: "assets/Sinij_Chapagain_CV.pdf",
   linkedin: "https://www.linkedin.com/in/sinij-chapagain-8588031b0/",
@@ -160,7 +160,7 @@ const WRITEUPS = [
   {
     slug: "kerberos-delegation-defense",
     category: "Active Directory",
-    title: "Kerberos Delegation Abuse — Detection & Defence",
+    title: "Kerberos Delegation Abuse — Detection & Defense",
     platform: "Red Team Research",
     date: "2025-10-15",
     difficulty: "Research",
