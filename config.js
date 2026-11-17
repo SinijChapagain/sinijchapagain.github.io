@@ -14,6 +14,30 @@ const PROFILE = {
 // `slug` must match the markdown filename (without .md).
 const WRITEUPS = [
   {
+    slug: "tombwatcher-htb",
+    title: "TombWatcher — AD ACL Chain to Domain Admin (ADCS ESC15)",
+    platform: "Hack The Box",
+    date: "2025-09-11",
+    difficulty: "Hard",
+    os: "Windows · Active Directory",
+    category: "Active Directory",
+    excerpt:
+      "An assumed-breach AD box chaining WriteSPN Kerberoasting, a gMSA password read, ForceChangePassword / WriteOwner / GenericAll DACL abuse, an AD Recycle Bin restore, and ADCS ESC15 (CVE-2024-49019) to Administrator.",
+    tags: ["Active Directory", "Kerberoast", "ADCS", "ESC15", "BloodHound", "DACL Abuse"],
+  },
+  {
+    slug: "angler-htb",
+    title: "Angler — Android Reversing with Frida",
+    platform: "Hack The Box",
+    date: "2025-09-05",
+    difficulty: "Medium",
+    os: "Android · Mobile",
+    category: "Mobile Security",
+    excerpt:
+      "A HTB Android challenge solved with pure dynamic instrumentation: trigger a hidden broadcast receiver, hook the Java decoder with Frida, then hook native strcmp to leak the flag as it is compared.",
+    tags: ["Mobile", "Android", "Frida", "Reversing", "Instrumentation"],
+  },
+  {
     slug: "bad-robot-arkx",
     category: "AI & LLM Security",
     title: "Bad Robot â Python eval() RCE in an AI Calculator Agent",
