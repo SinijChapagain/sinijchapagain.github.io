@@ -388,7 +388,7 @@
       var groups = document.getElementById('writeup-groups');
       if (!groups || typeof WRITEUPS === 'undefined') return;
       var items = WRITEUPS.slice().sort(function(a,b){ return String(b.date||'').localeCompare(String(a.date||'')); });
-      var order = ['AI & LLM Security','Active Directory','Web Exploitation','Reversing & Challenges'];
+      var order = ['AI & LLM Security','Active Directory','Web Exploitation','Mobile Security','Reversing & Challenges'];
       var cats = order.filter(function(c){ return items.some(function(w){ return w.category===c; }); });
       items.forEach(function(w){ if(w.category && cats.indexOf(w.category)<0) cats.push(w.category); });
       function card(w){
