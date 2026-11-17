@@ -217,3 +217,6 @@ footer { border-top: 1px solid var(--line); padding: 28px 0; color: var(--muted)
 .project-links a { font-size: 14px; font-weight: 600; display: inline-flex; align-items: center; gap: 7px; }
 .badge.research { color: #7dd3fc; border-color: rgba(125, 211, 252, .35); }
 .badge.lab { color: #c4b5fd; border-color: rgba(196, 181, 253, .35); }
+
+.badge.advanced { color: #fdba74; border-color: rgba(253, 186, 116, .35); }
+.badge.expert { color: #f0abfc; border-color: rgba(240, 171, 252, .35); }
