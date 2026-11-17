@@ -3,7 +3,7 @@
 const PROFILE = {
   name: "Sinij Chapagain",
   title: "Information Security Specialist",
-  email: "sinijchapagai@gmail.com",
+  email: "seeneez111@gmail.com",
   location: "Kathmandu, Nepal",
   cv: "assets/Sinij_Chapagain_CV.pdf",
   linkedin: "https://www.linkedin.com/in/sinij-chapagain-8588031b0/",
