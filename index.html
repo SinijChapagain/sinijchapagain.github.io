@@ -39,7 +39,8 @@
     <nav>
         <div class="wrap nav-inner">
             <a href="#top" class="brand"><span class="brand-mark">SC</span>Sinij Chapagain</a>
-            <div class="nav-links">
+            <button class="nav-toggle" id="nav-toggle" aria-label="Open menu" aria-expanded="false"><i class="fas fa-bars"></i></button>
+            <div class="nav-links" id="nav-links">
                 <a href="#expertise">Expertise</a>
                 <a href="#experience">Experience</a>
                 <a href="#certifications">Certifications</a>
@@ -228,7 +229,8 @@
                 <h2>Technical writeups</h2>
                 <p>Step-by-step attack walkthroughs — from Active Directory and web exploitation to AI agent and LLM security — written the way I write client reports: what I found, why it worked, and how to fix it.</p>
             </div>
-            <div class="writeups" id="writeup-grid"></div>
+            <div class="writeup-filters" id="writeup-filters"></div>
+            <div id="writeup-groups"></div>
         </div>
     </section>
 
@@ -369,23 +371,70 @@
     </footer>
 
     <script>
-        document.getElementById('year').textContent = new Date().getFullYear();
+    document.documentElement.classList.add('has-js');
+    document.getElementById('year').textContent = new Date().getFullYear();
+    var esc = function(s){ return String(s).replace(/[&<>"']/g, function(c){ return ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'})[c]; }); };
 
-        const esc = s => String(s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+    function reveal(scope){
+      var els = (scope||document).querySelectorAll('.reveal:not(.in)');
+      if (!('IntersectionObserver' in window)) { els.forEach(function(e){ e.classList.add('in'); }); return; }
+      var io = new IntersectionObserver(function(ents){ ents.forEach(function(en){ if(en.isIntersecting){ en.target.classList.add('in'); io.unobserve(en.target); } }); }, { rootMargin:'0px 0px -40px 0px', threshold:0.08 });
+      els.forEach(function(e){ io.observe(e); });
+    }
+    document.querySelectorAll('.section-head, .card, .job, .stat, .cert').forEach(function(e){ e.classList.add('reveal'); });
 
-        document.getElementById('writeup-grid').innerHTML = WRITEUPS.map(w => `
-            <a class="card writeup" href="writeup.html?w=${encodeURIComponent(w.slug)}">
-                <div class="writeup-meta">
-                    <span>${esc(w.platform)}</span>
-                    <span class="badge ${esc(w.difficulty.toLowerCase())}">${esc(w.difficulty)}</span>
-                    <span>${esc(w.os)}</span>
-                </div>
-                <h3>${esc(w.title)}</h3>
-                <p>${esc(w.excerpt)}</p>
-                <div class="tags">${w.tags.map(t => `<span class="tag">${esc(t)}</span>`).join('')}</div>
-                <div class="read-more">Read writeup →</div>
-            </a>
-        `).join('');
+    (function(){
+      var filters = document.getElementById('writeup-filters');
+      var groups = document.getElementById('writeup-groups');
+      if (!groups || typeof WRITEUPS === 'undefined') return;
+      var items = WRITEUPS.slice().sort(function(a,b){ return String(b.date||'').localeCompare(String(a.date||'')); });
+      var order = ['AI & LLM Security','Active Directory','Web Exploitation','Reversing & Challenges'];
+      var cats = order.filter(function(c){ return items.some(function(w){ return w.category===c; }); });
+      items.forEach(function(w){ if(w.category && cats.indexOf(w.category)<0) cats.push(w.category); });
+      function card(w){
+        return '<a class="card writeup reveal" href="writeup.html?w='+encodeURIComponent(w.slug)+'">'
+          + '<div class="writeup-meta"><span>'+esc(w.platform)+'</span>'
+          + '<span class="badge '+esc(String(w.difficulty||'').toLowerCase())+'">'+esc(w.difficulty)+'</span>'
+          + '<span>'+esc(w.os)+'</span></div>'
+          + '<h3>'+esc(w.title)+'</h3><p>'+esc(w.excerpt)+'</p>'
+          + '<div class="tags">'+(w.tags||[]).map(function(t){return '<span class="tag">'+esc(t)+'</span>';}).join('')+'</div>'
+          + '<div class="read-more">Read writeup \u2192</div></a>';
+      }
+      function render(f){
+        var html = '';
+        cats.forEach(function(c){
+          if (f !== 'all' && f !== c) return;
+          var inCat = items.filter(function(w){ return w.category===c; });
+          if (!inCat.length) return;
+          html += '<div class="writeup-group"><div class="group-head"><h3>'+esc(c)+'</h3><span class="group-count">'+inCat.length+'</span></div><div class="writeups">'+inCat.map(card).join('')+'</div></div>';
+        });
+        groups.innerHTML = html;
+        reveal(groups);
+      }
+      var chips = '<button class="filter-chip active" data-f="all">All <span>'+items.length+'</span></button>';
+      cats.forEach(function(c){ var n = items.filter(function(w){return w.category===c;}).length; chips += '<button class="filter-chip" data-f="'+esc(c)+'">'+esc(c)+' <span>'+n+'</span></button>'; });
+      filters.innerHTML = chips;
+      filters.addEventListener('click', function(e){ var b = e.target.closest('.filter-chip'); if(!b) return; filters.querySelectorAll('.filter-chip').forEach(function(x){ x.classList.remove('active'); }); b.classList.add('active'); render(b.getAttribute('data-f')); });
+      render('all');
+    })();
+
+    reveal(document);
+
+    (function(){
+      var links = Array.prototype.slice.call(document.querySelectorAll('.nav-links a[href^="#"]'));
+      var map = {}; links.forEach(function(a){ var id=a.getAttribute('href').slice(1); var s=document.getElementById(id); if(s) map[id]=a; });
+      var secs = Object.keys(map).map(function(id){ return document.getElementById(id); });
+      if (!('IntersectionObserver' in window) || !secs.length) return;
+      var io = new IntersectionObserver(function(ents){ ents.forEach(function(en){ if(en.isIntersecting){ links.forEach(function(a){a.classList.remove('active');}); if(map[en.target.id]) map[en.target.id].classList.add('active'); } }); }, { rootMargin:'-45% 0px -50% 0px' });
+      secs.forEach(function(s){ io.observe(s); });
+    })();
+
+    (function(){
+      var t = document.getElementById('nav-toggle'); var m = document.getElementById('nav-links');
+      if (!t || !m) return;
+      t.addEventListener('click', function(){ var open = m.classList.toggle('open'); t.setAttribute('aria-expanded', open?'true':'false'); });
+      m.addEventListener('click', function(e){ if (e.target.closest('a')) { m.classList.remove('open'); t.setAttribute('aria-expanded','false'); } });
+    })();
     </script>
 </body>
 </html>
